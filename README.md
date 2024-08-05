@@ -13,3 +13,9 @@ Golang rest API
 9. go get -u github.com/swaggo/gin-swagger
 10. go get github.com/gorilla/websocket
 11. go get github.com/gin-contrib/cors
+12. go get -u github.com/swaggo/swag/cmd/swag
+
+## Swag 
+```bash
+swag init --dir ./cmd/myapp,./internal/app/handler --output ./docs --parseDependency
+```

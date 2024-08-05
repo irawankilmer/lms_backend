@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log"
+
 	_ "github.com/irawankilmer/lms_backend/docs"
 	"github.com/irawankilmer/lms_backend/internal/config"
 	"github.com/irawankilmer/lms_backend/internal/routes"
@@ -15,5 +17,7 @@ import (
 func main() {
 	config.InitDB()
 	router := routes.SetupRouter()
-	router.Run(":8080")
+	if err := router.Run(":8080"); err != nil {
+		log.Fatalf("Failed to run server: %v", err)
+	}
 }
