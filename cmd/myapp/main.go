@@ -1,22 +1,19 @@
 package main
 
 import (
-	handler "github.com/irawankilmer/lms_backend/api"
+	_ "github.com/irawankilmer/lms_backend/docs"
 	"github.com/irawankilmer/lms_backend/internal/config"
-	"github.com/irawankilmer/lms_backend/internal/models"
-	"net/http"
+	"github.com/irawankilmer/lms_backend/internal/routes"
 )
+
+// @title LMS Backend API
+// @version 1.0
+// @description API Documentation for LMS Backend
+// @host localhost:8080
+// @BasePath /api
 
 func main() {
 	config.InitDB()
-	config.DB.AutoMigrate(
-		&models.User{},
-		&models.Role{},
-		&models.Permission{},
-		&models.UserRole{},
-		&models.RolePermission{},
-	)
-
-	http.HandleFunc("/api", handler.Handler)
-	http.ListenAndServe(":8080", nil)
+	router := routes.SetupRouter()
+	router.Run(":8080")
 }
