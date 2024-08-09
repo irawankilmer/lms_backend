@@ -11,6 +11,7 @@ import (
 	"github.com/irawankilmer/lms_backend/internal/middleware"
 	"github.com/irawankilmer/lms_backend/internal/models"
 	"github.com/irawankilmer/lms_backend/internal/service"
+	"github.com/irawankilmer/lms_backend/internal/utils"
 )
 
 func main() {
@@ -50,23 +51,23 @@ func main() {
 		}
 
 		if err := c.ShouldBindJSON(&input); err != nil {
-			c.JSON(400, gin.H{"error": err.Error()})
+			utils.JSON(c, 400, "Invalid input", nil, err.Error())
 			return
 		}
 
 		token, err := authService.Login(input.Identifier, input.Password)
 		if err != nil {
-			c.JSON(401, gin.H{"error": err.Error()})
+			utils.JSON(c, 401, "Authentication failed", nil, err.Error())
 			return
 		}
 
-		c.JSON(200, gin.H{"token": token})
+		utils.JSON(c, 200, "Login Successful", gin.H{"token": token}, "")
 	})
 
 	// Protected endpoint example
 	r.GET("/protected", middleware.AuthMiddleware(cfg), func(c *gin.Context) {
 		userID := c.MustGet("userID").(float64) // Assuming userID is of type float64
-		c.JSON(200, gin.H{"message": "Welcome!", "user_id": userID})
+		utils.JSON(c, 200, "Authorization Successful", gin.H{"message": "Welcome", "user_id": userID}, "")
 	})
 
 	// CRUD Endpoints for User
@@ -76,22 +77,22 @@ func main() {
 	protected.POST("/", func(c *gin.Context) {
 		var user models.User
 		if err := c.ShouldBindJSON(&user); err != nil {
-			c.JSON(400, gin.H{"error": err.Error()})
+			utils.JSON(c, 400, "Invalid input", nil, err.Error())
 			return
 		}
 
 		// Validate the user struct
 		if err := validate.Struct(&user); err != nil {
-			c.JSON(400, gin.H{"error": err.Error()})
+			utils.JSON(c, 400, "Invalid input", nil, err.Error())
 			return
 		}
 
 		if err := userService.CreateUser(&user); err != nil {
-			c.JSON(500, gin.H{"error": err.Error()})
+			utils.JSON(c, 500, "Failed to create user", nil, err.Error())
 			return
 		}
 
-		c.JSON(201, user)
+		utils.JSON(c, 201, "User created successfully", user, "")
 	})
 
 	// Start the server
