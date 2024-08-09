@@ -23,6 +23,11 @@ func main() {
 	// Initialize the database
 	dbInstance := db.InitDB(cfg)
 
+	// Run migrations
+	if err := db.Migrate(dbInstance); err != nil {
+		log.Fatalf("Failed to run migrations: %v", err)
+	}
+
 	// Initialize Gin
 	r := gin.Default()
 
