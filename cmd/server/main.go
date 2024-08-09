@@ -2,13 +2,11 @@ package main
 
 import (
 	"log"
-	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/irawankilmer/lms_backend/config"
 	"github.com/irawankilmer/lms_backend/internal/db"
-
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
+	"github.com/irawankilmer/lms_backend/internal/service"
 )
 
 func main() {
@@ -19,32 +17,33 @@ func main() {
 	}
 
 	// Initialize the database
-	db.InitDB(cfg)
+	dbInstance := db.InitDB(cfg)
 
 	// Initialize Gin
 	r := gin.Default()
 
-	// CORS middleware
-	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"},
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
-		MaxAge:           12 * time.Hour,
-	}))
+	// Initialize AuthService
+	authService := &service.AuthService{DB: dbInstance, Config: cfg}
 
-	// Logger middleware
-	r.Use(gin.Logger())
+	// Login endpoint
+	r.POST("/login", func(c *gin.Context) {
+		var input struct {
+			Identifier string `json:"identifier" binding:"required"`
+			Password   string `json:"password" binding:"required"`
+		}
 
-	// Recovery middleware
-	r.Use(gin.Recovery())
+		if err := c.ShouldBindJSON(&input); err != nil {
+			c.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
 
-	// Define a simple ping endpoint
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
+		token, err := authService.Login(input.Identifier, input.Password)
+		if err != nil {
+			c.JSON(401, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(200, gin.H{"token": token})
 	})
 
 	// Start the server
