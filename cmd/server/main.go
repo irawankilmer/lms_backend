@@ -21,6 +21,13 @@ func main() {
 	// Initialize Gin
 	r := gin.Default()
 
+	// Define a simple ping endpoint
+	r.GET("/ping", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "pong",
+		})
+	})
+
 	// Start the server
 	r.Run(":" + cfg.AppPort)
 }
