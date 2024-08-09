@@ -9,9 +9,9 @@ import (
 // User represents the user model
 type User struct {
 	ID            uint   `gorm:"primaryKey"`
-	Username      string `gorm:"unique;not null"`
-	Email         string `gorm:"unique;not null"`
-	Password      string `gorm:"not null"`
+	Username      string `gorm:"unique;not null" validate:"required,min=3,max=32,nospaces"` // validasi custom(tidak boleh mengandung spasi)
+	Email         string `gorm:"unique;not null" validate:"required,email"`
+	Password      string `gorm:"not null" validate:"required,min=8"`
 	EmailVerified *time.Time
 	LastLogin     *time.Time
 	LastActivity  *time.Time
