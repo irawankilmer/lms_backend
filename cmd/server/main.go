@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/irawankilmer/lms_backend/config"
 	"github.com/irawankilmer/lms_backend/internal/db"
+	"github.com/irawankilmer/lms_backend/internal/middleware"
 	"github.com/irawankilmer/lms_backend/internal/service"
 )
 
@@ -44,6 +45,12 @@ func main() {
 		}
 
 		c.JSON(200, gin.H{"token": token})
+	})
+
+	// Protected endpoint example
+	r.GET("/protected", middleware.AuthMiddleware(cfg), func(c *gin.Context) {
+		userID := c.MustGet("userID").(float64) // Assuming userID is of type float64
+		c.JSON(200, gin.H{"message": "Welcome!", "user_id": userID})
 	})
 
 	// Start the server
