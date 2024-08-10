@@ -1,0 +1,32 @@
+# Config file for Air (live reloading)
+
+# Root of the project
+root = "."
+tmp_dir = "tmp"
+
+# Watch files with these extensions
+exts = [
+    ".go",
+    ".tmpl",
+    ".html",
+    ".css",
+    ".js"
+]
+
+# Exclude these directories from watching
+excludes = [
+    "tmp",
+    "docs"
+]
+
+# Watch subdirectories
+follow_symlink = true
+
+# Command to run before building the project
+pre_build = "swag init -g cmd/server/main.go -o ./docs --parseDependency"
+
+# Command to build the project
+build = "go build -o tmp/main.exe cmd/server/main.go"
+
+# Command to run the project after building
+cmd = "./tmp/main.exe"

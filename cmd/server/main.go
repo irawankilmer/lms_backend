@@ -1,18 +1,25 @@
 package main
 
 import (
-	"log"
-	"strings"
-
-	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
 	"github.com/irawankilmer/lms_backend/config"
+	_ "github.com/irawankilmer/lms_backend/docs"
 	"github.com/irawankilmer/lms_backend/internal/db"
-	"github.com/irawankilmer/lms_backend/internal/middleware"
-	"github.com/irawankilmer/lms_backend/internal/models"
+	"github.com/irawankilmer/lms_backend/internal/handler"
+	"github.com/irawankilmer/lms_backend/internal/router"
 	"github.com/irawankilmer/lms_backend/internal/service"
-	"github.com/irawankilmer/lms_backend/internal/utils"
+	"log"
 )
+
+// @title MyApp API
+// @version 1.0
+// @description This is a sample server for MyApp.
+
+// @host localhost:8080
+// @BasePath /
+
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 
 func main() {
 	// Load configuration
@@ -24,77 +31,14 @@ func main() {
 	// Initialize the database
 	dbInstance := db.InitDB(cfg)
 
-	// Run migrations
-	if err := db.Migrate(dbInstance); err != nil {
-		log.Fatalf("Failed to run migrations: %v", err)
-	}
-
-	// Initialize Gin
-	r := gin.Default()
-
-	// Initialize Service
-	authService := &service.AuthService{DB: dbInstance, Config: cfg}
+	// Initialize services with dbInstance
 	userService := &service.UserService{DB: dbInstance}
+	authService := &service.AuthService{DB: dbInstance, Config: cfg}
+	handler.SetServices(userService, authService)
 
-	// Initialize validator
-	validate := validator.New()
-	// Register custom validation for no spaces in username
-	validate.RegisterValidation("nospaces", func(fl validator.FieldLevel) bool {
-		return !strings.Contains(fl.Field().String(), " ")
-	})
+	// Set up routes
+	r := router.SetupRouter(cfg) // Meneruskan konfigurasi ke router
 
-	// Login endpoint
-	r.POST("/login", func(c *gin.Context) {
-		var input struct {
-			Identifier string `json:"identifier" binding:"required"`
-			Password   string `json:"password" binding:"required"`
-		}
-
-		if err := c.ShouldBindJSON(&input); err != nil {
-			utils.JSON(c, 400, "Invalid input", nil, err.Error())
-			return
-		}
-
-		token, err := authService.Login(input.Identifier, input.Password)
-		if err != nil {
-			utils.JSON(c, 401, "Authentication failed", nil, err.Error())
-			return
-		}
-
-		utils.JSON(c, 200, "Login Successful", gin.H{"token": token}, "")
-	})
-
-	// Protected endpoint example
-	r.GET("/protected", middleware.AuthMiddleware(cfg), func(c *gin.Context) {
-		userID := c.MustGet("userID").(float64) // Assuming userID is of type float64
-		utils.JSON(c, 200, "Authorization Successful", gin.H{"message": "Welcome", "user_id": userID}, "")
-	})
-
-	// CRUD Endpoints for User
-	protected := r.Group("/users", middleware.AuthMiddleware(cfg))
-
-	// Create User
-	protected.POST("/", func(c *gin.Context) {
-		var user models.User
-		if err := c.ShouldBindJSON(&user); err != nil {
-			utils.JSON(c, 400, "Invalid input", nil, err.Error())
-			return
-		}
-
-		// Validate the user struct
-		if err := validate.Struct(&user); err != nil {
-			utils.JSON(c, 400, "Invalid input", nil, err.Error())
-			return
-		}
-
-		if err := userService.CreateUser(&user); err != nil {
-			utils.JSON(c, 500, "Failed to create user", nil, err.Error())
-			return
-		}
-
-		utils.JSON(c, 201, "User created successfully", user, "")
-	})
-
-	// Start the server
+	// Start server
 	r.Run(":" + cfg.AppPort)
 }
