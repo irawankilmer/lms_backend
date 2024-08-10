@@ -37,7 +37,7 @@ func main() {
 	handler.SetServices(userService, authService)
 
 	// Set up routes
-	r := router.SetupRouter(cfg) // Meneruskan konfigurasi ke router
+	r := router.SetupRouter(cfg)
 
 	// Start server
 	r.Run(":" + cfg.AppPort)
