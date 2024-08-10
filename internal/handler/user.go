@@ -16,7 +16,7 @@ var validate = validator.New()
 var userService *service.UserService
 var authService *service.AuthService
 
-// SetServices digunakan untuk menginisialisasi services di main.go
+// SetServices digunakan untuk menginisialisasi services di vercel.go
 func SetServices(u *service.UserService, a *service.AuthService) {
 	userService = u
 	authService = a
