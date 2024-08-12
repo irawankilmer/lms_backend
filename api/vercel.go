@@ -1,4 +1,4 @@
-package api
+package main
 
 import (
 	"log"
@@ -6,16 +6,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/irawankilmer/lms_backend/config"
-	_ "github.com/irawankilmer/lms_backend/docs"
 	"github.com/irawankilmer/lms_backend/internal/db"
 	"github.com/irawankilmer/lms_backend/internal/handler"
 	"github.com/irawankilmer/lms_backend/internal/router"
 	"github.com/irawankilmer/lms_backend/internal/service"
 )
 
-var (
-	app *gin.Engine
-)
+var app *gin.Engine
 
 func init() {
 	// Load configuration
@@ -33,7 +30,7 @@ func init() {
 	handler.SetServices(userService, authService)
 
 	// Set up routes
-	app = router.SetupRouter(cfg) // Inisialisasi variabel 'app' dengan gin.Engine
+	app = router.SetupRouter(cfg)
 }
 
 // vercel net/http entrypoint
