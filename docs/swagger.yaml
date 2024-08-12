@@ -1,6 +1,16 @@
 basePath: /
 definitions:
-  github_com_irawankilmer_lms_backend_internal_models.User:
+  handler.LoginInput:
+    properties:
+      identifier:
+        type: string
+      password:
+        type: string
+    required:
+    - identifier
+    - password
+    type: object
+  models.User:
     properties:
       createdAt:
         type: string
@@ -29,21 +39,11 @@ definitions:
     - password
     - username
     type: object
-  internal_handler.LoginInput:
-    properties:
-      identifier:
-        type: string
-      password:
-        type: string
-    required:
-    - identifier
-    - password
-    type: object
 host: localhost:8080
 info:
   contact: {}
-  description: This is a sample server for MyApp.
-  title: MyApp API
+  description: This is a sample server for Learning Management System.
+  title: Learning Management System API
   version: "1.0"
 paths:
   /login:
@@ -57,7 +57,7 @@ paths:
         name: loginInput
         required: true
         schema:
-          $ref: '#/definitions/internal_handler.LoginInput'
+          $ref: '#/definitions/handler.LoginInput'
       produces:
       - application/json
       responses:
@@ -89,7 +89,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/github_com_irawankilmer_lms_backend_internal_models.User'
+              $ref: '#/definitions/models.User'
             type: array
         "500":
           description: Internal Server Error
@@ -111,14 +111,14 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/github_com_irawankilmer_lms_backend_internal_models.User'
+          $ref: '#/definitions/models.User'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/github_com_irawankilmer_lms_backend_internal_models.User'
+            $ref: '#/definitions/models.User'
         "400":
           description: Bad Request
           schema:
@@ -173,7 +173,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_irawankilmer_lms_backend_internal_models.User'
+            $ref: '#/definitions/models.User'
         "400":
           description: Bad Request
           schema:
@@ -202,14 +202,14 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/github_com_irawankilmer_lms_backend_internal_models.User'
+          $ref: '#/definitions/models.User'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_irawankilmer_lms_backend_internal_models.User'
+            $ref: '#/definitions/models.User'
         "400":
           description: Bad Request
           schema:

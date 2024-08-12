@@ -35,5 +35,6 @@ func init() {
 
 // vercel net/http entrypoint
 func Handler(w http.ResponseWriter, r *http.Request) {
+	log.Println("Handling request:", r.URL.Path)
 	app.ServeHTTP(w, r)
 }

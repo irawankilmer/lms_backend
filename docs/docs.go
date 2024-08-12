@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal_handler.LoginInput"
+                            "$ref": "#/definitions/handler.LoginInput"
                         }
                     }
                 ],
@@ -85,7 +85,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/github_com_irawankilmer_lms_backend_internal_models.User"
+                                "$ref": "#/definitions/models.User"
                             }
                         }
                     },
@@ -117,7 +117,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_irawankilmer_lms_backend_internal_models.User"
+                            "$ref": "#/definitions/models.User"
                         }
                     }
                 ],
@@ -125,7 +125,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/github_com_irawankilmer_lms_backend_internal_models.User"
+                            "$ref": "#/definitions/models.User"
                         }
                     },
                     "400": {
@@ -168,7 +168,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_irawankilmer_lms_backend_internal_models.User"
+                            "$ref": "#/definitions/models.User"
                         }
                     },
                     "400": {
@@ -213,7 +213,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_irawankilmer_lms_backend_internal_models.User"
+                            "$ref": "#/definitions/models.User"
                         }
                     }
                 ],
@@ -221,7 +221,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_irawankilmer_lms_backend_internal_models.User"
+                            "$ref": "#/definitions/models.User"
                         }
                     },
                     "400": {
@@ -281,7 +281,22 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "github_com_irawankilmer_lms_backend_internal_models.User": {
+        "handler.LoginInput": {
+            "type": "object",
+            "required": [
+                "identifier",
+                "password"
+            ],
+            "properties": {
+                "identifier": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.User": {
             "type": "object",
             "required": [
                 "email",
@@ -321,21 +336,6 @@ const docTemplate = `{
                     "minLength": 3
                 }
             }
-        },
-        "internal_handler.LoginInput": {
-            "type": "object",
-            "required": [
-                "identifier",
-                "password"
-            ],
-            "properties": {
-                "identifier": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
         }
     },
     "securityDefinitions": {
@@ -353,8 +353,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "localhost:8080",
 	BasePath:         "/",
 	Schemes:          []string{},
-	Title:            "MyApp API",
-	Description:      "This is a sample server for MyApp.",
+	Title:            "Learning Management System API",
+	Description:      "This is a sample server for Learning Management System.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

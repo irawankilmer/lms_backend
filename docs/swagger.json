@@ -1,8 +1,8 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "This is a sample server for MyApp.",
-        "title": "MyApp API",
+        "description": "This is a sample server for Learning Management System.",
+        "title": "Learning Management System API",
         "contact": {},
         "version": "1.0"
     },
@@ -29,7 +29,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal_handler.LoginInput"
+                            "$ref": "#/definitions/handler.LoginInput"
                         }
                     }
                 ],
@@ -79,7 +79,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/github_com_irawankilmer_lms_backend_internal_models.User"
+                                "$ref": "#/definitions/models.User"
                             }
                         }
                     },
@@ -111,7 +111,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_irawankilmer_lms_backend_internal_models.User"
+                            "$ref": "#/definitions/models.User"
                         }
                     }
                 ],
@@ -119,7 +119,7 @@
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/github_com_irawankilmer_lms_backend_internal_models.User"
+                            "$ref": "#/definitions/models.User"
                         }
                     },
                     "400": {
@@ -162,7 +162,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_irawankilmer_lms_backend_internal_models.User"
+                            "$ref": "#/definitions/models.User"
                         }
                     },
                     "400": {
@@ -207,7 +207,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_irawankilmer_lms_backend_internal_models.User"
+                            "$ref": "#/definitions/models.User"
                         }
                     }
                 ],
@@ -215,7 +215,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_irawankilmer_lms_backend_internal_models.User"
+                            "$ref": "#/definitions/models.User"
                         }
                     },
                     "400": {
@@ -275,7 +275,22 @@
         }
     },
     "definitions": {
-        "github_com_irawankilmer_lms_backend_internal_models.User": {
+        "handler.LoginInput": {
+            "type": "object",
+            "required": [
+                "identifier",
+                "password"
+            ],
+            "properties": {
+                "identifier": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.User": {
             "type": "object",
             "required": [
                 "email",
@@ -313,21 +328,6 @@
                     "type": "string",
                     "maxLength": 32,
                     "minLength": 3
-                }
-            }
-        },
-        "internal_handler.LoginInput": {
-            "type": "object",
-            "required": [
-                "identifier",
-                "password"
-            ],
-            "properties": {
-                "identifier": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
                 }
             }
         }
