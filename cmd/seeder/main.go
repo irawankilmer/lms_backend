@@ -2,11 +2,10 @@ package main
 
 import (
 	"log"
-	"time"
 
 	"github.com/irawankilmer/lms_backend/config"
 	"github.com/irawankilmer/lms_backend/internal/db"
-	"github.com/irawankilmer/lms_backend/internal/models"
+	"github.com/irawankilmer/lms_backend/internal/db/seeder"
 )
 
 func main() {
@@ -19,24 +18,8 @@ func main() {
 	// Initialize the database
 	dbInstance := db.InitDB(cfg)
 
-	// Seed a new user
-	now := time.Now()
-	user := models.User{
-		Username:      "admin",
-		Email:         "admin@example.com",
-		EmailVerified: &now,
-		LastLogin:     &now,
-		LastActivity:  &now,
+	// Run the centralized seed function
+	if err := seeder.Seed(dbInstance); err != nil {
+		log.Fatalf("Seeding failed: %v", err)
 	}
-
-	// Hash password
-	if err := user.HashPassword("password123"); err != nil {
-		log.Fatalf("Failed to hash password: %v", err)
-	}
-
-	if err := dbInstance.Create(&user).Error; err != nil {
-		log.Fatalf("Failed to create user: %v", err)
-	}
-
-	log.Println("User seeded successfully")
 }

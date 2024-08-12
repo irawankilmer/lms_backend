@@ -32,6 +32,11 @@ func main() {
 	// Initialize the database
 	dbInstance := db.InitDB(cfg)
 
+	// Jalankan migrasi secara otomatis
+	if err := db.Migrate(dbInstance); err != nil {
+		log.Fatalf("Migration failed: %v", err)
+	}
+
 	// Initialize services with dbInstance
 	userService := &service.UserService{DB: dbInstance}
 	authService := &service.AuthService{DB: dbInstance, Config: cfg}

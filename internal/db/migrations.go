@@ -1,16 +1,17 @@
 package db
 
 import (
+	"log"
+
 	"github.com/go-gormigrate/gormigrate/v2"
 	"github.com/irawankilmer/lms_backend/internal/models"
 	"gorm.io/gorm"
 )
 
 func Migrate(db *gorm.DB) error {
-	// Define migrations
-	m := gormigrate.New(db, gormigrate.DefaultOptions, []*gormigrate.Migration{
+	migrations := []*gormigrate.Migration{
 		{
-			ID: "20230810_create_users_table",
+			ID: "20240812_create_users_table",
 			Migrate: func(tx *gorm.DB) error {
 				return tx.AutoMigrate(&models.User{})
 			},
@@ -18,9 +19,24 @@ func Migrate(db *gorm.DB) error {
 				return tx.Migrator().DropTable("users")
 			},
 		},
-		// Add more migrations here
-	})
+		{
+			ID: "20240812_create_reset_tokens_table",
+			Migrate: func(tx *gorm.DB) error {
+				return tx.AutoMigrate(&models.ResetToken{})
+			},
+			Rollback: func(tx *gorm.DB) error {
+				return tx.Migrator().DropTable("reset_tokens")
+			},
+		},
+		// Tambahkan migrasi lainnya di sini
+	}
 
-	// Run migrations
-	return m.Migrate()
+	m := gormigrate.New(db, gormigrate.DefaultOptions, migrations)
+	if err := m.Migrate(); err != nil {
+		log.Fatalf("Could not migrate: %v", err)
+		return err
+	}
+
+	log.Println("Migration completed successfully")
+	return nil
 }
