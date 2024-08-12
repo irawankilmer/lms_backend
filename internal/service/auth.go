@@ -10,7 +10,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// AuthService represents the service for authentication
 type AuthService struct {
 	DB     *gorm.DB
 	Config *config.Config
