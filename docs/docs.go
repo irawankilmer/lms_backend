@@ -31,11 +31,11 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "Login Input",
-                        "name": "loginInput",
+                        "name": "dto.loginInput",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.LoginInput"
+                            "$ref": "#/definitions/github_com_irawankilmer_lms_backend_internal_dto.LoginInput"
                         }
                     }
                 ],
@@ -56,6 +56,90 @@ const docTemplate = `{
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/password-reset/request": {
+            "post": {
+                "description": "Mengirimkan email untuk reset password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Request Password Reset",
+                "parameters": [
+                    {
+                        "description": "Email untuk reset password",
+                        "name": "email",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_irawankilmer_lms_backend_internal_dto.PasswordResetRequestInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/password-reset/reset": {
+            "post": {
+                "description": "Reset password menggunakan token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Reset Password",
+                "parameters": [
+                    {
+                        "description": "Token dan Password baru",
+                        "name": "passwordReset",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_irawankilmer_lms_backend_internal_dto.PasswordResetInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
@@ -85,7 +169,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.User"
+                                "$ref": "#/definitions/github_com_irawankilmer_lms_backend_internal_models.User"
                             }
                         }
                     },
@@ -117,7 +201,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/github_com_irawankilmer_lms_backend_internal_models.User"
                         }
                     }
                 ],
@@ -125,7 +209,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/github_com_irawankilmer_lms_backend_internal_models.User"
                         }
                     },
                     "400": {
@@ -168,7 +252,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/github_com_irawankilmer_lms_backend_internal_models.User"
                         }
                     },
                     "400": {
@@ -213,7 +297,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/github_com_irawankilmer_lms_backend_internal_models.User"
                         }
                     }
                 ],
@@ -221,7 +305,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/github_com_irawankilmer_lms_backend_internal_models.User"
                         }
                     },
                     "400": {
@@ -281,7 +365,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "handler.LoginInput": {
+        "github_com_irawankilmer_lms_backend_internal_dto.LoginInput": {
             "type": "object",
             "required": [
                 "identifier",
@@ -296,7 +380,34 @@ const docTemplate = `{
                 }
             }
         },
-        "models.User": {
+        "github_com_irawankilmer_lms_backend_internal_dto.PasswordResetInput": {
+            "type": "object",
+            "required": [
+                "password",
+                "token"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "minLength": 8
+                },
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_irawankilmer_lms_backend_internal_dto.PasswordResetRequestInput": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_irawankilmer_lms_backend_internal_models.User": {
             "type": "object",
             "required": [
                 "email",

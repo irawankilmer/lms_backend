@@ -1,12 +1,14 @@
 package handler
 
 import (
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"github.com/irawankilmer/lms_backend/internal/dto"
 	"github.com/irawankilmer/lms_backend/internal/models"
 	"github.com/irawankilmer/lms_backend/internal/service"
 	"github.com/irawankilmer/lms_backend/internal/utils"
-	"strconv"
 )
 
 // Inisialisasi validator
@@ -22,24 +24,18 @@ func SetServices(u *service.UserService, a *service.AuthService) {
 	authService = a
 }
 
-// Struct untuk input login
-type LoginInput struct {
-	Identifier string `json:"identifier" binding:"required"`
-	Password   string `json:"password" binding:"required"`
-}
-
 // @Summary Login user
 // @Description Login user with username or email and password
 // @Tags auth
 // @Accept json
 // @Produce json
-// @Param loginInput body LoginInput true "Login Input"
+// @Param dto.loginInput body dto.LoginInput true "Login Input"
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} map[string]interface{}
 // @Failure 401 {object} map[string]interface{}
 // @Router /login [post]
 func Login(c *gin.Context) {
-	var input LoginInput
+	var input dto.LoginInput
 
 	if err := c.ShouldBindJSON(&input); err != nil {
 		utils.JSON(c, 400, "Invalid input", nil, err.Error())
@@ -53,6 +49,62 @@ func Login(c *gin.Context) {
 	}
 
 	utils.JSON(c, 200, "Login successful", gin.H{"token": token}, "")
+}
+
+// @Summary Request Password Reset
+// @Description Mengirimkan email untuk reset password
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param email body dto.PasswordResetRequestInput true "Email untuk reset password"
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Router /password-reset/request [post]
+func RequestPasswordReset(c *gin.Context) {
+	var input dto.PasswordResetRequestInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		utils.JSON(c, 400, "Invalid input", nil, err.Error())
+		return
+	}
+
+	token, err := authService.GeneratePasswordResetToken(input.Email)
+	if err != nil {
+		utils.JSON(c, 400, "Failed to generate reset token", nil, err.Error())
+		return
+	}
+
+	err = authService.SendPasswordResetEmail(input.Email, token)
+	if err != nil {
+		utils.JSON(c, 500, "Failed to send reset email", nil, err.Error())
+		return
+	}
+
+	utils.JSON(c, 200, "Password reset email sent", nil, "")
+}
+
+// @Summary Reset Password
+// @Description Reset password menggunakan token
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param passwordReset body dto.PasswordResetInput true "Token dan Password baru"
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]interface{}
+// @Router /password-reset/reset [post]
+func ResetPassword(c *gin.Context) {
+	var input dto.PasswordResetInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		utils.JSON(c, 400, "Invalid input", nil, err.Error())
+		return
+	}
+
+	err := authService.ResetPassword(input.Token, input.Password)
+	if err != nil {
+		utils.JSON(c, 400, "Failed to reset password", nil, err.Error())
+		return
+	}
+
+	utils.JSON(c, 200, "Password reset successful", nil, "")
 }
 
 // @Summary Create a new user

@@ -1,6 +1,6 @@
 basePath: /
 definitions:
-  handler.LoginInput:
+  github_com_irawankilmer_lms_backend_internal_dto.LoginInput:
     properties:
       identifier:
         type: string
@@ -10,7 +10,25 @@ definitions:
     - identifier
     - password
     type: object
-  models.User:
+  github_com_irawankilmer_lms_backend_internal_dto.PasswordResetInput:
+    properties:
+      password:
+        minLength: 8
+        type: string
+      token:
+        type: string
+    required:
+    - password
+    - token
+    type: object
+  github_com_irawankilmer_lms_backend_internal_dto.PasswordResetRequestInput:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
+  github_com_irawankilmer_lms_backend_internal_models.User:
     properties:
       createdAt:
         type: string
@@ -54,10 +72,10 @@ paths:
       parameters:
       - description: Login Input
         in: body
-        name: loginInput
+        name: dto.loginInput
         required: true
         schema:
-          $ref: '#/definitions/handler.LoginInput'
+          $ref: '#/definitions/github_com_irawankilmer_lms_backend_internal_dto.LoginInput'
       produces:
       - application/json
       responses:
@@ -79,6 +97,62 @@ paths:
       summary: Login user
       tags:
       - auth
+  /password-reset/request:
+    post:
+      consumes:
+      - application/json
+      description: Mengirimkan email untuk reset password
+      parameters:
+      - description: Email untuk reset password
+        in: body
+        name: email
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_irawankilmer_lms_backend_internal_dto.PasswordResetRequestInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Request Password Reset
+      tags:
+      - auth
+  /password-reset/reset:
+    post:
+      consumes:
+      - application/json
+      description: Reset password menggunakan token
+      parameters:
+      - description: Token dan Password baru
+        in: body
+        name: passwordReset
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_irawankilmer_lms_backend_internal_dto.PasswordResetInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Reset Password
+      tags:
+      - auth
   /users:
     get:
       description: Retrieve a list of all users
@@ -89,7 +163,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.User'
+              $ref: '#/definitions/github_com_irawankilmer_lms_backend_internal_models.User'
             type: array
         "500":
           description: Internal Server Error
@@ -111,14 +185,14 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/models.User'
+          $ref: '#/definitions/github_com_irawankilmer_lms_backend_internal_models.User'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/models.User'
+            $ref: '#/definitions/github_com_irawankilmer_lms_backend_internal_models.User'
         "400":
           description: Bad Request
           schema:
@@ -173,7 +247,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.User'
+            $ref: '#/definitions/github_com_irawankilmer_lms_backend_internal_models.User'
         "400":
           description: Bad Request
           schema:
@@ -202,14 +276,14 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/models.User'
+          $ref: '#/definitions/github_com_irawankilmer_lms_backend_internal_models.User'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.User'
+            $ref: '#/definitions/github_com_irawankilmer_lms_backend_internal_models.User'
         "400":
           description: Bad Request
           schema:
