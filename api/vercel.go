@@ -17,17 +17,6 @@ var (
 	app *gin.Engine
 )
 
-// @title Learning Management System API
-// @version 1.0
-// @description This is a sample server for Learning Management System.
-
-// @host localhost:8080
-// @BasePath /
-
-// @securityDefinitions.apikey ApiKeyAuth
-// @in header
-// @name Authorization
-
 func init() {
 	// Load configuration
 	cfg, err := config.LoadConfig()
@@ -44,10 +33,7 @@ func init() {
 	handler.SetServices(userService, authService)
 
 	// Set up routes
-	r := router.SetupRouter(cfg)
-
-	// Start server
-	r.Run(":" + cfg.AppPort)
+	app = router.SetupRouter(cfg) // Inisialisasi variabel 'app' dengan gin.Engine
 }
 
 // vercel net/http entrypoint
