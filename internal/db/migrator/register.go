@@ -10,6 +10,7 @@ func MigrationRegistry() []*gormigrate.Migration {
 	return []*gormigrate.Migration{
 		createMigration("20240814_create_users_table", migrations.Up_20240814_CreateUsersTable, migrations.Down_20240814_CreateUsersTable),
 		createMigration("20240814_create_reset_tokens_table", migrations.Up_20240814_CreateResetTokensTable, migrations.Down_20240814_CreateResetTokensTable),
+		createMigration("20240814_create_clients_table", migrations.Up_20240814_CreateClientsTable, migrations.Down_20240814_CreateClientsTable),
 	}
 }
 
