@@ -1,11 +1,10 @@
-// cmd/migrate/main.go
 package main
 
 import (
 	"log"
 
 	"github.com/irawankilmer/lms_backend/config"
-	"github.com/irawankilmer/lms_backend/internal/db"
+	"github.com/irawankilmer/lms_backend/internal/db/migrator"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -24,7 +23,7 @@ func main() {
 	}
 
 	// Run migrations
-	if err := db.Migrate(dbInstance); err != nil {
+	if err := migrator.Migrate(dbInstance); err != nil {
 		log.Fatalf("Migration failed: %v", err)
 	}
 }
